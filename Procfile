@@ -1,1 +1,1 @@
-worker: python3 SRC/main.py
+worker: python main.py
