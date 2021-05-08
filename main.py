@@ -8,6 +8,8 @@ import os
 import re
 import time
 import discord.utils
+from dotenv import load_dotenv
+load_dotenv()
 
 #---Prefix Dict---#
 defaultPrefix = '>'
@@ -145,4 +147,5 @@ async def stop(ctx):
 
 
 #---Discord Bot API Token---#
-bot.run("NjI2NDY1NzE5MjMxNDQ3MDQw.XYufqg.d9oD33BRGsWNcwtdnE1aKBs8mYY")
+BOTAPITOKEN = os.getenv("BOTAPITOKEN")
+bot.run(BOTAPITOKEN)
