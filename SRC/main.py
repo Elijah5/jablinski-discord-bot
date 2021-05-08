@@ -145,5 +145,5 @@ async def stop(ctx):
 
 
 #---Discord Bot API Token---#
-apikey = os.getenv(BOTAPITOKEN)
+apikey = os.getenv('BOTAPITOKEN')
 bot.run(apikey)
