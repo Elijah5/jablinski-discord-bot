@@ -65,7 +65,23 @@ class Admin(commands.Cog):
         await ctx.send(
             "Improper syntax or permissions! \n \n ```Usage: \n  >bantimer {hours}```")
 
+    #---Tempban---#
+    @commands.command()
+    @has_permissions(administrator=True)
+    async def tempban(self, ctx, member: discord.Member, bHour, bMin):
+        intbHour = int(bHour)
+        intbMin = int(bMin)
+        ###Convert Hours and Minutes into Seconds for async sleep###
+        def timeConvert(intbHour, intbMin):
+            hourSeconds = intbHour * 3600
+            minSeconds = intbMin * 60
+            hourSeconds + minSeconds = secondsFinal
+            return secondsFinal
+
+        user = ctx.user.mention
+        await ctx.send(user + " is temporarily banned for ```" + bHour + "Hr" + bMin + "Min```")
 
 
+###Setup the cogs###
 def setup(bot):
     bot.add_cog(Admin(bot))
