@@ -68,9 +68,11 @@ class Admin(commands.Cog):
     #---Tempban---#
     @commands.command()
     @has_permissions(administrator=True)
-    async def tempban(self, ctx, member: discord.Member, bHour, bMin):
+    async def tempban(self, ctx, member: discord.Member, bHour, bMin, *, reason):
         intbHour = int(bHour)
         intbMin = int(bMin)
+        serverName = ctx.Guild.name
+        link = await ctx.channel.create_invite(max_age = 300)
         ###Convert Hours and Minutes into Seconds for async sleep###
         def timeConvert(intbHour, intbMin):
             hourSeconds = intbHour * 3600
@@ -78,8 +80,19 @@ class Admin(commands.Cog):
             hourSeconds + minSeconds = secondsFinal
             return secondsFinal
 
+        if reason == "" or " ":
+            reason = "No reason given"
         user = ctx.user.mention
         await ctx.send(user + " is temporarily banned for ```" + bHour + "Hr" + bMin + "Min```")
+        await ctx.member.ban(reason=reason)
+        await ctx.member.send("You have been banned from " + serverName + "for ```" + bHour + "Hr" + bMin + "Min``` " /n + "Reason:" + reason)
+        asyncio.sleep(secondsFinal)
+        await ctx.member.unban
+        await ctx.member.send("You have been unbanned from " + serverName)
+        await ctx.member.send(link)
+        await ctx.send(user + " Has been unbanned")
+
+
 
 
 ###Setup the cogs###
