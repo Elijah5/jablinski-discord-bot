@@ -72,26 +72,27 @@ class Admin(commands.Cog):
     async def tempban(self, ctx, member: discord.Member, bHour, bMin, *, reason):
         intbHour = int(bHour)
         intbMin = int(bMin)
-        serverName = ctx.Guild.name
-        link = await ctx.channel.create_invite(max_age = 300)
+        serverName = member.guild.name
+        link = await ctx.channel.create_invite(max_age = 100000)
         ###Convert Hours and Minutes into Seconds for async sleep###
-        def timeConvert(intbHour, intbMin):
-            hourSeconds = intbHour * 3600
-            minSeconds = intbMin * 60
-            hourSeconds + minSeconds = secondsFinal
-            return secondsFinal
 
-        if reason == "" or " ":
+
+        hourSeconds = intbHour * 3600
+        minSeconds = intbMin * 60
+        secondsFinal = hourSeconds + minSeconds
+        intsecondsFinal = int(secondsFinal)
+
+        if reason == "":
             reason = "No reason given"
-        user = ctx.user.mention
-        await ctx.send(user + " is temporarily banned for ```" + bHour + "Hr" + bMin + "Min```")
-        await ctx.member.ban(reason=reason)
-        await ctx.member.send("You have been banned from " + serverName + "for ```" + bHour + "Hr" + bMin + "Min``` " /n + "Reason:" + reason)
-        asyncio.sleep(secondsFinal)
-        await ctx.member.unban
-        await ctx.member.send("You have been unbanned from " + serverName)
-        await ctx.member.send(link)
-        await ctx.send(user + " Has been unbanned")
+        mentionUser = member.mention
+        await ctx.send(mentionUser + " is temporarily banned for ```" + bHour + "Hr" + bMin + "Min```")
+        await member.send("You have been banned from " + serverName + " for ```" + bHour + "Hr" + bMin + "Min```" + "Reason: " + reason + "\n When you are unbanned, click the link to join")
+        await member.send(link)
+        await member.ban(reason=reason)
+        print(intsecondsFinal)
+        await asyncio.sleep(intsecondsFinal)
+        await ctx.guild.unban(member)
+        await ctx.send(mentionUser + " Has been unbanned")
 
 
 
