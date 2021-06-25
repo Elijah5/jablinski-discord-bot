@@ -65,7 +65,7 @@ class Admin(commands.Cog):
         await ctx.send(
             "Improper syntax or permissions! \n \n ```Usage: \n  >bantimer {hours}```")
 
-        
+
     #---Tempban---#
     @commands.command()
     @has_permissions(administrator=True)
