@@ -46,24 +46,26 @@ class Admin(commands.Cog):
     #---Ban Timer---#
     @commands.command()
     @has_permissions(administrator=True)
-    async def bantimer(self, ctx, member: discord.Member, bTimer):
-        intTimer = int(bTimer)
-        endtime = (datetime.datetime.now() +
-                   datetime.timedelta(hours=intTimer)).strftime("%d%H:%M")
-        await ctx.send("Set to ban in `" + bTimer + " Hours`!")
-        bTime = (datetime.datetime.now() + datetime.timedelta(hours=intTimer))
-        breakplz = False
-        while breakplz == False:
-            if bTime <= datetime.datetime.now():
-                await ctx.send("Banning " + member.mention + "...")
-                await member.ban(reason="Timed Ban")
-                breakplz = True
-            await asyncio.sleep(60)
+    async def bantimer(self, ctx, member: discord.Member, banHour, banMin, *, banReason):
+        intbanHour = int(banHour)
+        intbanMin = int(banMin)
+        ###Convert Hours and Minutes into Seconds for async sleep###
+        hourtoSeconds = intbanHour * 3600
+        mintoSeconds = intbanMin * 60
+        finalSeconds = hourtoSeconds + mintoSeconds
+        intfinalSeconds = int(finalSeconds)
+
+        if banReason == "":
+            banReason = "No reason given"
+        mentionUser = member.mention
+        await ctx.send(mentionUser + " will be banned for ```" + banHour + "Hr" + banMin + "Min```")
+        await member.ban(reason=banReason)
+        await asyncio.sleep(intfinalSeconds)
 
     @bantimer.error
     async def bantimer_error(error, ctx, self):
         await ctx.send(
-            "Improper syntax or permissions! \n \n ```Usage: \n  >bantimer {hours}```")
+            "Improper syntax or permissions! \n \n ```Usage: \n  >bantimer {user} {hours} {minutes} {reason}```")
 
     #---Tempban---#
     @commands.command()
@@ -74,8 +76,6 @@ class Admin(commands.Cog):
         serverName = member.guild.name
         link = await ctx.channel.create_invite(max_age = 100000)
         ###Convert Hours and Minutes into Seconds for async sleep###
-
-
         hourSeconds = intbHour * 3600
         minSeconds = intbMin * 60
         secondsFinal = hourSeconds + minSeconds
@@ -88,13 +88,15 @@ class Admin(commands.Cog):
         await member.send("You have been banned from " + serverName + " for ```" + bHour + "Hr" + bMin + "Min```" + "Reason: " + reason + "\n When you are unbanned, click the link to join")
         await member.send(link)
         await member.ban(reason=reason)
-        print(intsecondsFinal)
         await asyncio.sleep(intsecondsFinal)
         await ctx.guild.unban(member)
         await ctx.send(mentionUser + " Has been unbanned")
 
 
-
+    @tempban.error
+    async def tempban_error(error, ctx, self):
+        await ctx.send(
+            "Improper syntax or permissions! \n \n ```Usage: \n  >tempban {user} {hours} {minutes} {reason}```")
 
 ###Setup the cogs###
 def setup(bot):

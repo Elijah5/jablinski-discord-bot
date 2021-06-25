@@ -72,24 +72,22 @@ class Games(commands.Cog):
             await ctx.send("*BANG!* Well that was a bad idea")
 
     @commands.command()
-    async def remind(self, ctx, tHours, tMinutes, *tRemind):
-        tRemind = " ".join(tRemind)
+    async def remind(self, ctx, tHours, tMinutes, *, tRemind):
+
         timerUser = ctx.author.mention
         strtHours = str(tHours)
         strtMinutes = str(tMinutes)
-        await ctx.send(timerUser + " Your `" + strtHours + "h" + strtMinutes +
-                       "m` reminder is set!")
-        endtime = datetime.datetime.now() + datetime.timedelta(
-            hours=int(tHours)) + datetime.timedelta(minutes=int(tMinutes))
-        breakpls = False
-        while breakpls == False:
-            if datetime.datetime.now() >= endtime:
-                await ctx.send(timerUser + " Your `" + strtHours + "h" +
-                               strtMinutes + "m` reminder is going off! " +
-                               "Reminder: " + str(tRemind) + "!")
-                ###pls break###
-                breakpls = True
-            await asyncio.sleep(60)
+        inttHours = int(tHours)
+        inttMins = int(tMinutes)
+        await ctx.send("Reminder Set!")
+        ###Convert Hours and Minutes into Seconds for async sleep###
+        hourSeconds = inttHours * 3600
+        minSeconds = inttMins * 60
+        secondsFinal = hourSeconds + minSeconds
+        intsecondsFinal = int(secondsFinal)
+        await asyncio.sleep(secondsFinal)
+        await ctx.send(timerUser + " Your `" + strtHours + "h" + strtMinutes + "m` reminder is going off! " + "Reminder: " + str(tRemind) + "!")
+
 
     @remind.error
     async def timer_error(error, ctx, self):
