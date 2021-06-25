@@ -65,7 +65,37 @@ class Admin(commands.Cog):
         await ctx.send(
             "Improper syntax or permissions! \n \n ```Usage: \n  >bantimer {hours}```")
 
+    #---Tempban---#
+    @commands.command()
+    @has_permissions(administrator=True)
+    async def tempban(self, ctx, member: discord.Member, bHour, bMin, *, reason):
+        intbHour = int(bHour)
+        intbMin = int(bMin)
+        serverName = member.guild.name
+        link = await ctx.channel.create_invite(max_age = 100000)
+        ###Convert Hours and Minutes into Seconds for async sleep###
 
 
+        hourSeconds = intbHour * 3600
+        minSeconds = intbMin * 60
+        secondsFinal = hourSeconds + minSeconds
+        intsecondsFinal = int(secondsFinal)
+
+        if reason == "":
+            reason = "No reason given"
+        mentionUser = member.mention
+        await ctx.send(mentionUser + " is temporarily banned for ```" + bHour + "Hr" + bMin + "Min```")
+        await member.send("You have been banned from " + serverName + " for ```" + bHour + "Hr" + bMin + "Min```" + "Reason: " + reason + "\n When you are unbanned, click the link to join")
+        await member.send(link)
+        await member.ban(reason=reason)
+        print(intsecondsFinal)
+        await asyncio.sleep(intsecondsFinal)
+        await ctx.guild.unban(member)
+        await ctx.send(mentionUser + " Has been unbanned")
+
+
+
+
+###Setup the cogs###
 def setup(bot):
     bot.add_cog(Admin(bot))
